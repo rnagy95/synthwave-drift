@@ -1,0 +1,66 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+
+concurrency:
+  group: "release"
+  cancel-in-progress: true
+
+jobs:
+  version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: develop
+
+      - name: Configure Git
+        run: |
+          git config --global user.name release_pipeline
+          git config --global user.email release_pipeline@rnagy95.github.io
+
+      - name: Setup Node.JS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Read bump type
+        id: bump_type
+        run: echo "type=$(cat .bump-type)" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: bump
+        run: |
+          cd webApp
+          new_tag=$(npm version ${{ steps.bump_type.outputs.type }})
+          echo "new_tag=$new_tag" >> $GITHUB_OUTPUT
+
+      - name: Push commit and tag
+        run: |
+          git checkout -b release/${{ steps.bump.outputs.new_tag }}
+          git add .
+          git commit -m "Bump version to ${{ steps.bump.outputs.new_tag }}"
+          git tag -a "${{ steps.bump.outputs.new_tag }}" -m "Release ${{ steps.bump.outputs.new_tag }}"
+          git push --set-upstream origin release/${{ steps.bump.outputs.new_tag }}
+          git push --tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Pull Requests
+        run: |
+          gh pr create -H release/${{ steps.bump.outputs.new_tag }} -B develop --title 'Merge release/${{ steps.bump.outputs.new_tag }} into develop' --body 'Created by GitHub Actions'
+          gh pr create -H release/${{ steps.bump.outputs.new_tag }} -B master --title 'Merge release/${{ steps.bump.outputs.new_tag }} into master' --body 'Created by GitHub Actions'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+        
