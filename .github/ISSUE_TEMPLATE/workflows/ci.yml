@@ -1,0 +1,33 @@
+name: CI Pipepline
+
+on:
+  pull_request:
+    branches: ["master","develop"]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.JS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Test Angular App
+        run: | 
+            cd webApp
+            npm ci
+            npm run test --if-present
