@@ -19,7 +19,7 @@
           "options": {
             "outputPath": {
               "base": "../_site",
-              "browser":""
+              "browser": ""
             },
             "browser": "src/main.ts",
             "polyfills": [
@@ -69,6 +69,10 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "hmr": false,
+            "liveReload": true
+          },
           "configurations": {
             "production": {
               "buildTarget": "synthwave-drift:build:production"
@@ -104,5 +108,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
