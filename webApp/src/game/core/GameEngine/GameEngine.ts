@@ -62,7 +62,7 @@ export class GameEngine {
         }
         else {
             const err = new Error("Game is tried to be stopped while not running.");
-            this.logger.logError("err");
+            this.logger.logError(err);
             throw err;
         }
     }
