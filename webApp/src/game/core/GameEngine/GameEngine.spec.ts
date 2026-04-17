@@ -70,14 +70,14 @@ describe('GameEngine', () => {
         const render = () => { };
         const engine = new GameEngine(update, render);
         engine.start()
-        expect(() => engine.start()).toThrowError("Game is already running.")
+        expect(() => engine.start()).toThrowError("Game is tried to be started while already running.")
     });
 
     it('should throw error on stop when not running', () => {
         const update = (timestamp: number) => { };
         const render = () => { };
         const engine = new GameEngine(update, render);
-        expect(() => engine.stop()).toThrowError("Game is not running.")
+        expect(() => engine.stop()).toThrowError("Game is tried to be stopped while not running.")
     });
 
     it('should not call update and render if stopped', () => {
