@@ -1,13 +1,18 @@
 import getLogger, { __resetLoggerForTests } from "./Logger";
 
 describe("Logger", () => {
-    beforeEach(()=>{
+    beforeEach(() => {
         __resetLoggerForTests();
     });
 
     it('should create', () => {
         const logger = getLogger();
         expect(logger).toBeTruthy();
+    });
+
+    it('should return proper type string', () => {
+        const logger = getLogger();
+        expect(logger.toString()).toBe("[object Logger]");
     });
 
     it('should be singleton', () => {

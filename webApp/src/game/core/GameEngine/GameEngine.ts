@@ -15,29 +15,13 @@ export class GameEngine {
     constructor(update: Function, render: Function) {
         this.update = update;
         this.render = render;
-        this.logger.logDebug("GameEngine have been initialized.")
+        this.logger.logDebug("GameEngine has been initialized.")
     }
 
-    private gameLoop = (timestamp: number): void => {
-        this.logger.logDebug("GameEngine.gameLoop has been called")
-        if (!this.isRunning)
-            return;
-
-        let deltaTime = timestamp - this.lastFrameTimeStamp;
-        this.elapsedTime += deltaTime;
-        this.lastFrameTimeStamp = timestamp;
-
-        while (this.elapsedTime >= this.step) {
-            this.logger.logInfo(`FRAMERATE=${Math.round(1000 / this.elapsedTime)}FPS`)
-            this.update(this.FRAMES_PER_SECOND)
-            this.elapsedTime -= this.FRAMES_PER_SECOND
-        }
-
-        this.render()
-
-        this.animationFrameId = requestAnimationFrame(this.gameLoop)
+    public get [Symbol.toStringTag]() {
+        return "GameEngine";
     }
-
+    
     public start = (): void => {
         if (!this.isRunning) {
             this.isRunning = true;
@@ -50,7 +34,7 @@ export class GameEngine {
             throw err;
         }
     }
-
+    
     public stop = (): void => {
         if (this.isRunning) {
             this.isRunning = false;
@@ -67,4 +51,23 @@ export class GameEngine {
         }
     }
 
+    private gameLoop = (timestamp: number): void => {
+        this.logger.logDebug("GameEngine.gameLoop has been called")
+        if (!this.isRunning)
+            return;
+    
+        let deltaTime = timestamp - this.lastFrameTimeStamp;
+        this.elapsedTime += deltaTime;
+        this.lastFrameTimeStamp = timestamp;
+    
+        while (this.elapsedTime >= this.step) {
+            this.logger.logInfo(`FRAMERATE=${Math.round(1000 / this.elapsedTime)}FPS`)
+            this.update(this.FRAMES_PER_SECOND)
+            this.elapsedTime -= this.FRAMES_PER_SECOND
+        }
+    
+        this.render()
+    
+        this.animationFrameId = requestAnimationFrame(this.gameLoop)
+    }
 }

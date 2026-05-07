@@ -26,6 +26,13 @@ describe('GameEngine', () => {
         expect(engine).toBeTruthy()
     });
 
+    it('should return proper type string', () => {
+        const update = (timestamp: number) => { };
+        const render = () => { };
+        const engine = new GameEngine(update, render);
+        expect(engine.toString()).toBe("[object GameEngine]");
+    });
+
     it('should start', () => {
         const update = (timestamp: number) => { };
         const render = () => { };
