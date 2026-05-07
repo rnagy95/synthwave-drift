@@ -21,6 +21,10 @@ class Logger {
         this.verbosoty = verbosity;
     }
 
+    public get [Symbol.toStringTag]() {
+        return "Logger";
+    }
+
     public logDebug = (message: string): void => {
         this.log(message, LogLevel.DEBUG)
     }
@@ -51,12 +55,12 @@ class Logger {
 
 let instance: Logger | null = null;
 
-export default function getLogger(verbosity: LogLevel = LogLevel.DEBUG) {
+export default function getLogger(verbosity: LogLevel = LogLevel.DEBUG): Logger {
     if (!instance)
         instance = new Logger(verbosity);
     return instance;
 }
 
-export function __resetLoggerForTests() {
+export function __resetLoggerForTests(): void {
     instance = null;
 }
